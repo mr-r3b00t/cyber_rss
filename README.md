@@ -52,7 +52,7 @@
 ## malware_research (6)
 - [Google Online Security Blog](https://feeds.feedburner.com/GoogleOnlineSecurityBlog)
 - [Google Project Zero](https://googleprojectzero.blogspot.com/feeds/posts/default?alt=rss)
-- [Google TAG](https://blog.google/threat-analysis-group/rss/)
+- [Google Cloud Threat Intelligence (TAG, Mandiant)](https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/)
 - [Malwarebytes Labs](https://blog.malwarebytes.com/feed/)
 - [Securelist (Kaspersky)](https://securelist.com/feed/)
 - [WeLiveSecurity (ESET)](https://www.welivesecurity.com/en/rss/feed/)
