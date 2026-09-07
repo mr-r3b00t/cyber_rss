@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Veille Cyber — Flux priorisés</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Aller au contenu principal</a>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">CENTRE OPÉRATIONNEL</p>
+      <h1>Veille Cyber</h1>
+    </div>
+    <div class="status"><span aria-hidden="true"></span> Base locale disponible</div>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <aside class="rail" aria-label="Synthèse">
+      <p class="section-label">SITUATION</p>
+      <div class="total"><strong>{{ stats.total }}</strong><span>articles collectés</span></div>
+      <nav class="severity-nav" aria-label="Filtrer par importance">
+        {% for level, label in [('critical','Critique'),('high','Élevée'),('medium','Moyenne'),('low','Faible')] %}
+        <a href="{{ url_for('index', level=level) }}" class="severity {{ level }} {% if selected_level == level %}active{% endif %}"{% if selected_level == level %} aria-current="page"{% endif %}>
+          <span>{{ label }}</span><strong>{{ stats.levels.get(level, 0) }}</strong>
+        </a>
+        {% endfor %}
+      </nav>
+      <p class="section-label categories-label">CATÉGORIES</p>
+      <ul class="categories">
+        {% for item in stats.categories %}
+        <li><a href="{{ url_for('index', category=item.category) }}"{% if selected_category == item.category %} class="active" aria-current="page"{% endif %}>{{ item.category|replace('_', ' ') }} <span>{{ item.count }}</span></a></li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <section class="workspace">
+      <form class="filters" method="get">
+        <label class="search">
+          <span class="sr-only">Rechercher</span>
+          <input name="q" value="{{ search }}" placeholder="Rechercher une CVE, un produit, une menace…">
+        </label>
+        <select name="level" aria-label="Importance">
+          <option value="">Toutes les priorités</option>
+          {% for value, label in [('critical','Critique'),('high','Élevée'),('medium','Moyenne'),('low','Faible')] %}
+          <option value="{{ value }}" {% if selected_level == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <select name="category" aria-label="Catégorie">
+          <option value="">Toutes les catégories</option>
+          {% for item in stats.categories %}
+          <option value="{{ item.category }}" {% if selected_category == item.category %}selected{% endif %}>{{ item.category|replace('_', ' ') }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Filtrer</button>
+        {% if search or selected_level or selected_category %}<a class="reset" href="{{ url_for('index') }}">Réinitialiser</a>{% endif %}
+      </form>
+
+      <div class="list-header">
+        <span>PRIORITÉ</span><span>ACTUALITÉ</span><span>SOURCE</span><span>DATE</span>
+      </div>
+      <div class="feed">
+        {% set importance_labels = {'critical': 'Critique', 'high': 'Élevée', 'medium': 'Moyenne', 'low': 'Faible'} %}
+        {% for article in articles %}
+        <article class="article {{ article.importance }}">
+          <div class="score" role="img" aria-label="Priorité {{ importance_labels.get(article.importance, article.importance) }}, score d’importance : {{ article.score }} sur 100">
+            <strong aria-hidden="true">{{ article.score }}</strong><span aria-hidden="true">/100</span>
+          </div>
+          <div class="article-body">
+            <div class="meta-mobile"><span class="pill {{ article.importance }}">{{ importance_labels.get(article.importance, article.importance) }}</span> {{ article.source_name }}</div>
+            <h2><a href="{{ article.url }}" target="_blank" rel="noopener noreferrer">{{ article.title }} <span class="new-tab-indicator" aria-hidden="true">↗</span><span class="sr-only"> (s’ouvre dans un nouvel onglet)</span></a></h2>
+            {% if article.summary %}<p>{{ article.summary|truncate(230) }}</p>{% endif %}
+            <div class="signals">{% for reason in article.reasons %}<span>{{ reason }}</span>{% endfor %}</div>
+          </div>
+          <div class="source"><strong>{{ article.source_name }}</strong><span>{{ article.category|replace('_', ' ') }}</span></div>
+          <time datetime="{{ article.published_at or article.collected_at }}">{{ (article.published_at or article.collected_at)[:10] }}</time>
+        </article>
+        {% else %}
+        <div class="empty"><strong>Aucune actualité à afficher</strong><span>Lancez une collecte ou élargissez les filtres.</span></div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,5 +1,51 @@
 # cyber_rss
 
+Liste de flux RSS utiles et application web de veille cyber priorisée.
+
+## Application de veille
+
+L'application collecte les flux déclarés ci-dessous, déduplique les articles dans SQLite et les classe selon un score explicable de 0 à 100.
+
+### Fonctions
+
+- collecte concurrente et tolérante aux erreurs ;
+- catégories issues directement de ce README ;
+- déduplication par URL ou identifiant de l'article ;
+- niveaux `critical`, `high`, `medium` et `low` ;
+- bonus pour exploitation active, zero-day, RCE, rançongiciel, CVE et secteur santé ;
+- tableau de bord responsive avec recherche et filtres ;
+- API JSON : `/api/articles`, `/api/stats` et `/health`.
+
+### Démarrage
+
+Prérequis : Python 3.11+ et [uv](https://docs.astral.sh/uv/).
+
+```bash
+uv sync --dev
+uv run cyber-rss refresh
+uv run cyber-rss serve --host 127.0.0.1 --port 8080
+```
+
+Ouvrir ensuite <http://127.0.0.1:8080>.
+
+Pour automatiser la collecte toutes les 15 minutes :
+
+```cron
+*/15 * * * * cd /chemin/cyber_rss && /chemin/uv run cyber-rss refresh
+```
+
+La base est créée dans `data/cyber-news.db`. Le serveur écoute uniquement sur localhost par défaut ; placer un reverse proxy authentifié devant l'application avant toute exposition réseau.
+
+### Validation
+
+```bash
+uv run pytest -q
+uv run ruff check .
+uv run ruff format --check .
+```
+
+Le scoring est une aide au triage, pas une mesure CVSS. Les raisons ayant contribué au score sont affichées sur chaque article.
+
 ## cert (11)
 - [ASD ACSC Alerts (Australia)](https://www.cyber.gov.au/rss/alerts)
 - [CERT-FR (ANSSI)](https://www.cert.ssi.gouv.fr/feed/)
