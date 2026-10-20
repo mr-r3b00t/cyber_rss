@@ -63,6 +63,7 @@
 - [ZDI Upcoming Advisories](https://www.zerodayinitiative.com/rss/upcoming/)
 - [Zero Day Initiative Blog](https://www.zerodayinitiative.com/blog?format=rss)
 
-## community (2)
+## community (3)
+- [ICHI Internet Cyber Health Index – Alerts](https://ichi.global/api/alerts) - Daily aggregated cyber threat alerts drawn from 20+ public sources (CISA KEV, CVE/NVD, Shodan, Censys, abuse.ch, US-CERT, SANS ISC, and others). Free, publicly accessible.
 - [SANS ISC Diary](https://isc.sans.edu/rssfeed.xml)
 - [SANS ISC Diary (Full)](https://isc.sans.edu/rssfeed_full.xml)
